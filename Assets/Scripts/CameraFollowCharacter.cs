@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections; 
 
-public class CameraFollowCharacter : MonoBehaviour {
+public class CameraFollowCharacter : MonoBehaviour
+{
 
 	public Transform player;
+	public float zOffset;
 
-	void Update () {
-		transform.position = new Vector3 (player.position.x, player.position.y, this.transform.position.z);
+	void Start ()
+	{
+		zOffset = transform.position.z - player.position.z;
+	}
+
+	void Update ()
+	{
+		transform.position = new Vector3 (player.position.x, player.position.y, zOffset + player.position.z); 
 	}
 }
