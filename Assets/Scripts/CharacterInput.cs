@@ -4,20 +4,12 @@ using System.Collections;
 public class CharacterInput : MonoBehaviour
 {
 
-	private static float BASE_FORCE = 30f;
-
+	public float BASE_FORCE = 30f;
 	public Rigidbody rigidBody;
 
 	private Vector3 startDragPoint;
 	private Vector3 endDragPoint;
 
-	// Use this for initialization
-	void Start ()
-	{
-	
-	}
-	
-	// Update is called once per frame
 	void Update ()
 	{
 		if (Input.GetMouseButtonDown (0)) {
