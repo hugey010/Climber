@@ -4,7 +4,7 @@ using System.Collections;
 public class CharacterInput : MonoBehaviour
 {
 
-	public float BASE_FORCE = 30f;
+	public float BASE_FORCE = 0.01f;
 	public Rigidbody rootRigidBody;
 
 	private Vector3 startDragPoint;
@@ -14,6 +14,8 @@ public class CharacterInput : MonoBehaviour
 	void Start ()
 	{
 		zPosition = rootRigidBody.position.z;
+
+		//InvokeRepeating ("orient", 0f, 0.5f);
 	}
 
 	void Update ()
@@ -43,8 +45,57 @@ public class CharacterInput : MonoBehaviour
 		}
 	}
 
+	float xcounter = 0f;
+
 	private void orient ()
 	{
+		Vector3 velocity = rootRigidBody.velocity;
+		Debug.Log ("velocity = " + velocity);
+
+		float magnitude = velocity.magnitude * velocity.y;
+		Vector3 lookDirection = rootRigidBody.position + velocity;
+
+		/*
+		float vx = velocity.normalized.x;
+		float vy = velocity.normalized.y;
+
+
+
+		float tiltAroundX = Mathf.Acos (vx / vy) * Mathf.Rad2Deg;
+		if (float.IsNaN (tiltAroundX)) {
+			tiltAroundX = 0f;
+		}
+
+		Debug.Log ("x rotate = " + tiltAroundX);
+
+
+		float tiltAroundY = 0f;
+		if (tiltAroundX > 0f && tiltAroundX < 180) {
+			tiltAroundY = 90f;
+		} else {
+			tiltAroundY = 270f;
+		}
+
+		//Debug.Log 
+
+
+
+		Quaternion target = Quaternion.Euler (xcounter++, tiltAroundY, 0f);
+
+		Debug.Log ("target rotate = " + target);
+		rootRigidBody.rotation = target;
+
+		*/
+
+
+
+
+		Quaternion newRotation = Quaternion.LookRotation (lookDirection, Vector3.up);
+
+		Quaternion fixedRotation = newRotation * Quaternion.Euler (90f, 0f, 0f);
+		rootRigidBody.transform.rotation = fixedRotation; 	
+
+		/*
 		Vector3 velocity = rootRigidBody.velocity;
 		float magnitude = velocity.magnitude * velocity.y;
 
@@ -56,5 +107,6 @@ public class CharacterInput : MonoBehaviour
 			Quaternion fixedRotation = newRotation * Quaternion.Euler (90, 0, 0);
 			rootRigidBody.transform.rotation = Quaternion.Slerp (rootRigidBody.transform.rotation, fixedRotation, Time.fixedTime);
 		}
+		*/
 	}
 }
