@@ -6,10 +6,13 @@ public class CharacterInput : MonoBehaviour
 
 	public float BASE_FORCE = 0.01f;
 	public Rigidbody rootRigidBody;
+	private float VELOCITY_BASE = 0.001f;
 
 	private Vector3 startDragPoint;
 	private Vector3 endDragPoint;
 	private float zPosition;
+
+
 
 	void Start ()
 	{
@@ -37,20 +40,23 @@ public class CharacterInput : MonoBehaviour
 		Vector3 dragLine = startDragPoint - endDragPoint;
 		float force = dragLine.magnitude * BASE_FORCE;
 		Vector3 direction = dragLine.normalized;
-		rootRigidBody.AddForce (direction * force);
 
+		rootRigidBody.velocity = direction * force * VELOCITY_BASE;
+
+		/*
+		rootRigidBody.AddForce (direction * force);
 		Rigidbody[] children = rootRigidBody.GetComponentsInChildren<Rigidbody> ();
 		foreach (Rigidbody rb in children) {
 			rb.AddForce (direction * force);
 		}
+		*/
 	}
 
-	float xcounter = 0f;
 
 	private void orient ()
 	{
 		Vector3 velocity = rootRigidBody.velocity;
-		Debug.Log ("velocity = " + velocity);
+		//Debug.Log ("velocity = " + velocity);
 
 		float magnitude = velocity.magnitude * velocity.y;
 		Vector3 lookDirection = rootRigidBody.position + velocity;
@@ -95,6 +101,7 @@ public class CharacterInput : MonoBehaviour
 		Quaternion fixedRotation = newRotation * Quaternion.Euler (90f, 0f, 0f);
 		rootRigidBody.transform.rotation = fixedRotation; 	
 
+		transform.position = new Vector3 (transform.position.x, transform.position.y, zPosition);
 		/*
 		Vector3 velocity = rootRigidBody.velocity;
 		float magnitude = velocity.magnitude * velocity.y;
