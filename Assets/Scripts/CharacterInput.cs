@@ -18,7 +18,7 @@ public class CharacterInput : MonoBehaviour
 	{
 		zPosition = rootRigidBody.position.z;
 
-		//InvokeRepeating ("orient", 0f, 0.5f);
+		orient ();
 	}
 
 	void Update ()
@@ -32,7 +32,7 @@ public class CharacterInput : MonoBehaviour
 			jump ();
 		}
 
-		orient ();
+		//orient ();
 	}
 
 	private void jump ()
@@ -42,6 +42,8 @@ public class CharacterInput : MonoBehaviour
 		Vector3 direction = dragLine.normalized;
 
 		rootRigidBody.velocity = direction * force * VELOCITY_BASE;
+
+		orient ();
 
 		/*
 		rootRigidBody.AddForce (direction * force);
@@ -58,8 +60,23 @@ public class CharacterInput : MonoBehaviour
 		Vector3 velocity = rootRigidBody.velocity;
 		//Debug.Log ("velocity = " + velocity);
 
-		float magnitude = velocity.magnitude * velocity.y;
+		//float magnitude = velocity.magnitude * velocity.y;
+
+		if (velocity.x >= 0) {
+			rootRigidBody.transform.rotation = Quaternion.Euler (0f, 90f, 0f);
+		} else {
+			rootRigidBody.transform.rotation = Quaternion.Euler (0f, 270f, 0f);
+		}
+
+
+		/*
 		Vector3 lookDirection = rootRigidBody.position + velocity;
+
+		Quaternion newRotation = Quaternion.LookRotation (lookDirection, Vector3.up);
+		Quaternion fixedRotation = newRotation * Quaternion.Euler (90f, 0f, 0f);
+		rootRigidBody.transform.rotation = fixedRotation; 	
+		transform.position = new Vector3 (transform.position.x, transform.position.y, zPosition);
+		*/
 
 		/*
 		float vx = velocity.normalized.x;
@@ -94,14 +111,6 @@ public class CharacterInput : MonoBehaviour
 		*/
 
 
-
-
-		Quaternion newRotation = Quaternion.LookRotation (lookDirection, Vector3.up);
-
-		Quaternion fixedRotation = newRotation * Quaternion.Euler (90f, 0f, 0f);
-		rootRigidBody.transform.rotation = fixedRotation; 	
-
-		transform.position = new Vector3 (transform.position.x, transform.position.y, zPosition);
 		/*
 		Vector3 velocity = rootRigidBody.velocity;
 		float magnitude = velocity.magnitude * velocity.y;

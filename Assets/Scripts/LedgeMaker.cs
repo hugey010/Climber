@@ -19,6 +19,8 @@ public class LedgeMaker : MonoBehaviour
 
 	private int lastEditY;
 
+	private Vector3 startPosition = Vector3.zero;
+
 	private float yOffset = 0;
 
 	//public GameObject.class objectClass;
@@ -26,35 +28,30 @@ public class LedgeMaker : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		startPosition = transform.position;
+
 		yOffset = transform.position.y - player.transform.position.y;
 		lastEditY = (int)transform.position.y;
+
+		spawnInitials ();
 	}
 
-	void spawnInitialLedges ()
+	void spawnInitials ()
 	{
-
+		spawnLedgesAt (player.position.y);
+		spawnWallsAt (player.position.y);
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-
 		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffset, player.transform.position.z);
 
-
 		checkAndSpawnLedges ();
-
-		// check if has changed more  than x amount
-
-
-
-		// if so, delete and spawn more blocks, on both ends (vertically and horizontally)
-
 	}
 
 	Dictionary<int, HashSet<GameObject>> ledgeMap = new Dictionary<int, HashSet<GameObject>> ();
 
-	//Dictionary<HashSet<IEnumerable<int>, Vector3>> positionsMap = new Dictionary<HashSet<IEnumerable<int>, Vector3>> ();
 	void checkAndSpawnLedges ()
 	{
 
@@ -62,34 +59,14 @@ public class LedgeMaker : MonoBehaviour
 
 		if (Mathf.Abs (yPosition - lastEditY) < HEIGHT) {
 			return;
+		} else if (ledgeMap.ContainsKey (yPosition)) {
+			return;
 		} else {
 			// update last edit y value
 			lastEditY = yPosition;
-		}
 
-		Debug.Log ("making cube at y = " + yPosition);
-
-		int topRange = yPosition + rangeSize;
-		int bottomRange = yPosition - rangeSize;
-
-		// spawn inbetween. y * density
-		//for (int i = bottomRange; i < topRange; i++) {
-		// spawn density blocks per y value
-
-		// create new hashset for storage
-		HashSet<GameObject> currentLayer = new HashSet<GameObject> ();
-		ledgeMap.Add (yPosition, currentLayer);
-
-		float xPos = transform.position.x;
-		for (int b = 0; b < GRID_DENSITY; b++) {
-			float maxX = xPos + WIDTH;
-			float minX = xPos - WIDTH;
-			float ledgeX = Random.Range (minX, maxX);
-			Vector3 ledgePosition = new Vector3 (ledgeX, player.position.y + yOffset, player.position.z);
-			GameObject ledge = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			ledge.transform.position = ledgePosition;
-
-			currentLayer.Add (ledge);
+			spawnLedgesAt (yPosition);
+			spawnWallsAt (yPosition);
 		}
 
 		// destroy below
@@ -97,6 +74,46 @@ public class LedgeMaker : MonoBehaviour
 		// destroy above
 		//clearLedgesInRange (topRange, topRange + rangeSize);
 
+	}
+
+	void spawnLedgesAt (float yPosition)
+	{
+		HashSet<GameObject> currentLayer = new HashSet<GameObject> ();
+		ledgeMap.Add ((int)yPosition, currentLayer);
+		
+		float xPos = startPosition.x; 
+		for (int b = 0; b < GRID_DENSITY; b++) {
+			float maxX = xPos + WIDTH;
+			float minX = xPos - WIDTH;
+			float ledgeX = Random.Range (minX, maxX);
+			
+			float maxY = yPosition + yOffset + HEIGHT;
+			float minY = yPosition + yOffset - HEIGHT;
+			float ledgeY = Random.Range (minY, maxY);
+			
+			Vector3 ledgePosition = new Vector3 (ledgeX, ledgeY, player.position.z);
+			GameObject ledge = GameObject.CreatePrimitive (PrimitiveType.Cube);
+			ledge.tag = "Environment";
+			ledge.transform.position = ledgePosition;
+			
+			currentLayer.Add (ledge);
+		}
+	}
+
+	void spawnWallsAt (float yPosition)
+	{
+		Vector3 scale = new Vector3 (0.1f, startPosition.y * 2.0f, 1f);
+		float xPos = startPosition.x;
+		float maxX = xPos + WIDTH;
+		float minX = xPos - WIDTH;
+
+		GameObject wallMin = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		wallMin.transform.position = new Vector3 (minX, yPosition, player.position.z);
+		wallMin.transform.localScale = scale;
+
+		GameObject wallMax = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		wallMax.transform.position = new Vector3 (maxX, yPosition, player.position.z);
+		wallMax.transform.localScale = scale;
 	}
 
 	void clearLedgesInRange (int bottomRange, int topRange)

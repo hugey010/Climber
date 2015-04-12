@@ -9,7 +9,6 @@ public class StickyHand : MonoBehaviour
 	private	 bool StickOn = true;
 	private Vector3 stickPosition = Vector3.zero;
 
-	/*
 	public void setStickOn (bool isOn)
 	{
 		StickOn = isOn;
@@ -23,7 +22,7 @@ public class StickyHand : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			setStickOn (!StickOn);
-			toggleGravity (rootRigidBody, true);
+			//toggleGravity (rootRigidBody, true);
 		}
 
 		if (StickOn && stickPosition != Vector3.zero) {
@@ -33,9 +32,11 @@ public class StickyHand : MonoBehaviour
 
 	void OnTriggerEnter (Collider other)
 	{
+		Debug.Log ("trigger enter");
 		if (StickOn && other.tag == "Environment" && stickPosition == Vector3.zero) {
 			stickPosition = transform.position;
-			toggleGravity (rootRigidBody, false);
+			rootRigidBody.velocity = Vector3.zero;
+			//toggleGravity (rootRigidBody, false);
 		}
 	}
 
@@ -46,5 +47,4 @@ public class StickyHand : MonoBehaviour
 			r.mass = enabled ? 0.5f : 0.00001f;
 		}
 	}
-*/
 }
