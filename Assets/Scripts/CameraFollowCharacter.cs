@@ -10,8 +10,12 @@ public class CameraFollowCharacter : MonoBehaviour
 
 	private Vector3 startPosition;
 
+	private CharacterInput characterInputScript = null;
+
 	void Start ()
 	{
+		characterInputScript = GetComponent<CharacterInput> ();
+
 		zOffset = transform.position.z - player.position.z;
 		startPosition = transform.position;
 	}

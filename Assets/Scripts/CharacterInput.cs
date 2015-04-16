@@ -6,16 +6,19 @@ public class CharacterInput : MonoBehaviour
 
 	public float BASE_FORCE = 0.01f;
 	public Rigidbody rootRigidBody;
+
 	private float VELOCITY_BASE = 0.001f;
 
 	private Vector3 startDragPoint;
 	private Vector3 endDragPoint;
 	private float zPosition;
 
-
+	private StickyHand stickyHandScript = null;
 
 	void Start ()
 	{
+		stickyHandScript = GetComponent<StickyHand> ();
+
 		zPosition = rootRigidBody.position.z;
 
 		orient ();
@@ -28,8 +31,12 @@ public class CharacterInput : MonoBehaviour
 			
 		}
 		if (Input.GetMouseButtonUp (0)) {
+			stickyHandScript.setStickOn (false);
+
 			endDragPoint = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, zPosition);
 			jump ();
+
+			stickyHandScript.setStickOn (true);
 		}
 
 		//orient ();
