@@ -7,7 +7,7 @@ public class CharacterInput : MonoBehaviour
 	public float BASE_FORCE = 0.01f;
 	public Rigidbody rootRigidBody;
 
-	private float VELOCITY_BASE = 0.001f;
+	private float VELOCITY_BASE = 0.0005f;
 
 	private Vector3 startDragPoint;
 	private Vector3 endDragPoint;
@@ -38,12 +38,13 @@ public class CharacterInput : MonoBehaviour
 
 			stickyHandScript.setStickOn (true);
 		}
-
-		//orient ();
 	}
 
 	private void jump ()
 	{
+		Debug.DrawLine (startDragPoint, endDragPoint, Color.red, 30.0f);
+
+
 		Vector3 dragLine = startDragPoint - endDragPoint;
 		float force = dragLine.magnitude * BASE_FORCE;
 		Vector3 direction = dragLine.normalized;

@@ -10,7 +10,7 @@ public class LedgeMaker : MonoBehaviour
 
 
 	public float WIDTH = 10;
-	public float HEIGHT = 20;
+	private	float HEIGHT = 20;
 	public float GRID_DENSITY = 10; // per 100 in either direction
 
 	private int rangeSize = 100;
@@ -30,6 +30,8 @@ public class LedgeMaker : MonoBehaviour
 	{
 		startPosition = transform.position;
 
+		HEIGHT = transform.position.y;
+
 		yOffset = transform.position.y - player.transform.position.y;
 		lastEditY = (int)transform.position.y;
 
@@ -38,8 +40,10 @@ public class LedgeMaker : MonoBehaviour
 
 	void spawnInitials ()
 	{
-		spawnLedgesAt (player.position.y);
-		spawnWallsAt (player.position.y);
+		for (float i = 0f; i < transform.position.y * 2; i += HEIGHT) {
+			spawnLedgesAt (i);
+			spawnWallsAt (i);
+		}
 	}
 	
 	// Update is called once per frame
@@ -76,6 +80,7 @@ public class LedgeMaker : MonoBehaviour
 
 	}
 
+	public GameObject ledgeObject;
 	void spawnLedgesAt (float yPosition)
 	{
 		HashSet<GameObject> currentLayer = new HashSet<GameObject> ();
@@ -92,10 +97,8 @@ public class LedgeMaker : MonoBehaviour
 			float ledgeY = Random.Range (minY, maxY);
 			
 			Vector3 ledgePosition = new Vector3 (ledgeX, ledgeY, player.position.z);
-			GameObject ledge = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			ledge.tag = "Environment";
-			ledge.transform.position = ledgePosition;
-			
+
+			GameObject ledge = (GameObject)Instantiate (ledgeObject, ledgePosition, Quaternion.Euler (new Vector3 (90f, 0f, 0f)));
 			currentLayer.Add (ledge);
 		}
 	}
